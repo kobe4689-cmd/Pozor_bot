@@ -47,7 +47,6 @@ async def process_successful_payment(message: types.Message):
 
 async def main():
     logging.basicConfig(level=logging.INFO)
-    await dp.dp_shut = True
     await dp.start_polling(bot)
 
 if __name__ == "__main__":
