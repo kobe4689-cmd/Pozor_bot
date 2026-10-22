@@ -1,3 +1,5 @@
+import os
+os.system("pip install aiogram==3.17.0")
 import asyncio
 import logging
 from aiogram import Bot, Dispatcher, F, types
