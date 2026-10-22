@@ -4,15 +4,11 @@ import sqlite3
 from datetime import datetime, timedelta
 from aiogram import Bot, Dispatcher, F
 from aiogram.filters import Command
-from aiogram.types import (
-    Message,
-    PreCheckoutQuery,
-    LabeledPrice
-)
+from aiogram.types import Message, PreCheckoutQuery, LabeledPrice
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 BOT_TOKEN = "8690718330:AAE8xbjTyEdeL4Eogzv0tTYvGxDIJLe8nC4"
-CHANNEL_ID = -1004382269176 
+CHANNEL_ID = -1004382269176
 
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher()
