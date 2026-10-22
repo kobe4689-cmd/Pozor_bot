@@ -7,7 +7,7 @@ from aiogram.filters import Command
 from aiogram.types import Message, PreCheckoutQuery, LabeledPrice
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
-BOT_TOKEN = "8690718330:AAE8xbjTyEdeL4Eogzv0tTYvGxDIJLe8nC4"
+BOT_TOKEN = "8690718330:AAGfd4wBtBA_81ZnEYH9b7MSD5dtEX0XqX8"
 CHANNEL_ID = -1004382269176
 
 bot = Bot(token=BOT_TOKEN)
