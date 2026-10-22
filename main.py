@@ -40,7 +40,7 @@ def add_subscription(user_id: int, chat_id: int, days: int = 30):
 
 @dp.message(Command("start"))
 async def cmd_start(message: Message):
-    prices = [LabeledPrice(label="Месячная подписка", amount=100)]
+    prices = [LabeledPrice(label="Месячная подписка", amount=50)]
     await message.answer_invoice(
         title="Подписка на закрытый канал",
         description="Доступ на 30 дней с автоматической проверкой",
