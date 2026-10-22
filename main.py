@@ -11,7 +11,7 @@ from aiogram.types import (
 )
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
-# Твои данные успешно вставлены:
+# Токен бота и ID канала
 BOT_TOKEN = "8690718330:AAE8xbjTyEdeL4Eogzv0tTYvGxDIJLe8nC4"
 CHANNEL_ID = -1004382269176 
 
@@ -62,7 +62,6 @@ async def pre_checkout_handler(query: PreCheckoutQuery):
 
 @dp.message(F.successful_payment)
 async def successful_payment_handler(message: Message):
-    # Ссылка действительна 1 день для активации
     expire_time = int((datetime.now() + timedelta(days=1)).timestamp())
     
     try:
@@ -72,7 +71,6 @@ async def successful_payment_handler(message: Message):
             expire_date=expire_time
         )
         
-        # Записываем подписку на 30 дней
         add_subscription(message.from_user.id, CHANNEL_ID, days=30)
 
         await message.answer(
@@ -97,23 +95,18 @@ async def check_subscriptions():
         
         if now >= expire_date:
             try:
-                # Проверяем статус пользователя в канале
                 member = await bot.get_chat_member(chat_id=chat_id, user_id=user_id)
                 
-                # Если админ или создатель — пропускаем и продлеваем запись на сутки
                 if member.status in ["administrator", "creator"]:
                     add_subscription(user_id, chat_id, days=1)
                     continue
                 
-                # Если обычный участник — кикаем и разбаниваем
                 await bot.ban_chat_member(chat_id=chat_id, user_id=user_id)
                 await bot.unban_chat_member(chat_id=chat_id, user_id=user_id)
                 
-                # Удаляем из базы
                 cursor.execute("DELETE FROM subscriptions WHERE user_id = ? AND chat_id = ?", (user_id, chat_id))
                 conn.commit()
                 
-                # Уведомляем пользователя
                 try:
                     await bot.send_message(
                         user_id, 
@@ -132,7 +125,6 @@ async def main():
     logging.basicConfig(level=logging.INFO)
     init_db()
     
-    # Запускаем фоновый планировщик проверки каждую минуту
     scheduler = AsyncIOScheduler()
     scheduler.add_job(check_subscriptions, "interval", minutes=1)
     scheduler.start()
