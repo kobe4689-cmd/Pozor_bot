@@ -6,7 +6,7 @@ from aiogram import Bot, Dispatcher, F, types
 from aiogram.filters import CommandStart
 from aiogram.types import LabeledPrice, PreCheckoutQuery
 
-BOT_TOKEN = 8690718330:AAE8xbjTYeDeL4Eogzv0tTYvGxDIJLe8nC4
+BOT_TOKEN = "8690718330:AAE8xbjTYeDeL4Eogzv0tTYvGxDIJLe8nC4"
 CHANNEL_ID = -1004382269176     #
 PRICE_STARS = 50         
 bot = Bot(token=BOT_TOKEN)
