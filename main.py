@@ -1,13 +1,16 @@
 import asyncio
 import logging
 import sqlite3
+import os
 from datetime import datetime, timedelta
+from aiohttp import web
 from aiogram import Bot, Dispatcher, F
 from aiogram.filters import Command
 from aiogram.types import Message, PreCheckoutQuery, LabeledPrice
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
-BOT_TOKEN = "8690718330:AAGfd4wBtBA_81ZnEYH9b7MSD5dtEX0XqX8"
+# Токен и ID канала (токен автоматически берется из переменных окружения Render, если задан)
+BOT_TOKEN = os.getenv("BOT_TOKEN", "8690718330:AAGfd4wBtBA_81ZnEYH9b7MSD5dtEX0XqX8")
 CHANNEL_ID = -1004382269176
 
 bot = Bot(token=BOT_TOKEN)
@@ -102,12 +105,31 @@ async def check_subscriptions():
                 logging.error(f"Не удалось проверить пользователя {user_id}: {e}")
     conn.close()
 
+# Веб-сервер для Render (чтобы хостинг видел, что бот «жив» и не выключал его)
+async def handle_health_check(request):
+    return web.Response(text="Bot is alive!", status=200)
+
 async def main():
     logging.basicConfig(level=logging.INFO)
     init_db()
+
+    # Запускаем веб-сервер для Render
+    app = web.Application()
+    app.router.add_get("/", handle_health_check)
+    runner = web.AppRunner(app)
+    await runner.setup()
+    
+    port = int(os.environ.get("PORT", 8080))
+    site = web.TCPSite(runner, "0.0.0.0", port)
+    await site.start()
+    logging.info(f"Веб-сервер запущен на порту {port}")
+
+    # Запускаем планировщик проверки подписок
     scheduler = AsyncIOScheduler()
     scheduler.add_job(check_subscriptions, "interval", minutes=1)
     scheduler.start()
+
+    # Запускаем самого бота
     await dp.start_polling(bot)
 
 if __name__ == "__main__":
